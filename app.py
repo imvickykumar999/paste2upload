@@ -1,3 +1,8 @@
+
+# from HostTor import VicksTor
+import VicksTor as vix
+vix.run_server('flask')
+
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import os
 
@@ -25,5 +30,5 @@ def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
 
