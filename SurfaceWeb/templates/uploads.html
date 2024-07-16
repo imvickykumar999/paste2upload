@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploaded Files</title>
+    <style>
+        .uploaded-image {
+            max-width: 200px; /* Adjust the size as needed */
+            margin: 10px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Uploaded Files</h1>
+    <ul>
+        {% for file in files %}
+        <a target="_blank" href="{{ url_for('uploaded_file', filename=file) }}">
+            <img src="{{ url_for('uploaded_file', filename=file) }}" alt="{{ file }}" class="uploaded-image">
+        </a>
+        {% endfor %}
+    </ul>
+    <div class="button-container">
+    	<a href="{{ url_for('upload_image') }}" class="button">Upload Another Image</a>
+    </div>
+</body>
+</html>
+
