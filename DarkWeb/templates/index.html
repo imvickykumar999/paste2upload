@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .upload-container {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            margin: 50px;
+            position: relative;
+        }
+        .upload-container img {
+            max-width: 100%;
+            height: auto;
+            display: none;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-container" id="uploadContainer">
+        <form id="uploadForm" method="post" enctype="multipart/form-data">
+            <input type="file" id="fileInput" name="image" style="display: none;">
+            <img id="preview" src="#" alt="Image Preview">
+            <p>Paste image from clipboard or click "Choose File"</p>
+            <button class="button" type="button" id="chooseFileButton">Choose File</button>
+            <button class="button" type="submit">Upload</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const chooseFileButton = document.getElementById('chooseFileButton');
+            const fileInput = document.getElementById('fileInput');
+            const preview = document.getElementById('preview');
+            const uploadForm = document.getElementById('uploadForm');
+
+            chooseFileButton.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            document.addEventListener('paste', (event) => {
+                const items = event.clipboardData.items;
+                for (let item of items) {
+                    if (item.type.indexOf('image') !== -1) {
+                        const file = item.getAsFile();
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            preview.src = e.target.result;
+                            preview.style.display = 'block';
+
+                            // Create a new File object with a dynamic timestamped filename
+                            const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
+                            const filename = `pasted-image-${timestamp}.png`;
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(new File([file], filename));
+                            fileInput.files = dataTransfer.files;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+
+            uploadForm.addEventListener('submit', (event) => {
+                if (fileInput.files.length === 0) {
+                    event.preventDefault();
+                    alert('No file selected or pasted!');
+                }
+            });
+        });
+    </script>
+    <div class="button-container">
+    	<a href="{{ url_for('list_uploads') }}" class="button">View Uploaded Files</a>
+    </div>
+</body>
+</html>
+

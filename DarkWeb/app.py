@@ -18,7 +18,7 @@ def upload_image():
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
                 image.save(filepath)
                 return redirect(url_for('upload_image'))
-    return render_template('upload.html')
+    return render_template('index.html')
 
 @app.route('/uploads')
 def list_uploads():
