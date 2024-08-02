@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploaded Files</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            text-align: center;
+            width: 80%;
+        }
+        .container h1 {
+            font-size: 36px;
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+        .uploads-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .uploads-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ced4da;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+        }
+        .uploads-list img {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 5px;
+        }
+        .delete-button {
+            padding: 5px 10px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #dc3545;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-container a {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button-container a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Uploaded Files</h1>
+        <ul class="uploads-list">
+            {% for file in files %}
+            <li>
+                <a href="{{ url_for('uploaded_file', filename=file) }}" target="_blank">
+                    <img src="{{ url_for('uploaded_file', filename=file) }}" alt="Uploaded Image">
+                </a>
+                <form action="{{ url_for('delete_file', filename=file) }}" method="POST">
+                    <button type="submit" class="delete-button">Delete</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="button-container">
+            <a href="{{ url_for('upload_image') }}">Upload More Images</a>
+        </div>
+    </div>
+</body>
+</html>
+

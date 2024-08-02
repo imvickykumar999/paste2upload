@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .upload-container {
+            border: 2px dashed #ced4da;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            background-color: #fff;
+        }
+        .upload-container h1 {
+            font-size: 24px;
+            color: #495057;
+            margin-bottom: 20px;
+        }
+        .upload-container input[type="file"] {
+            display: none;
+        }
+        .upload-container label {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .upload-container button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .upload-container button:hover,
+        .upload-container label:hover {
+            background-color: #0056b3;
+        }
+        .preview {
+            display: block;
+            margin-top: 20px;
+            max-width: 100%;
+            max-height: 200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <h1>Paste image from clipboard or click "Choose File"</h1>
+        <form action="/" method="POST" enctype="multipart/form-data" id="uploadForm">
+            <input type="file" name="image" id="imageInput">
+            <label for="imageInput">Choose File</label>
+            <button type="submit">Upload</button>
+        </form>
+        
+        <br>
+        <img id="preview" class="preview" src="#" alt="Image Preview" style="display: none;">
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileInput = document.getElementById('imageInput');
+            const preview = document.getElementById('preview');
+            const uploadForm = document.getElementById('uploadForm');
+
+            fileInput.addEventListener('change', () => {
+                const file = fileInput.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Please select an image file.');
+                    fileInput.value = '';
+                }
+            });
+
+            document.addEventListener('paste', (event) => {
+                const items = event.clipboardData.items;
+                for (let item of items) {
+                    if (item.type.indexOf('image') !== -1) {
+                        const file = item.getAsFile();
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            preview.src = e.target.result;
+                            preview.style.display = 'block';
+
+                            // Create a new File object with a dynamic timestamped filename
+                            const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
+                            const filename = `pasted-image-${timestamp}.png`;
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(new File([file], filename));
+                            fileInput.files = dataTransfer.files;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
